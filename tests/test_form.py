@@ -1,20 +1,44 @@
 import os.path
-from selene import browser, have, be
+from selene import browser, have, be, by
 from selene.support.shared.jquery_style import s
 
 
-def test_practice_form():
-    browser.open('/')
+class RegistrationPage:
+    """Открываем страницу и выполняем проверку"""
 
-    """Выполняем проверку что находимся на нужной странице"""
-    s('.pattern-backgound').should(have.exact_text('Practice Form'))
+    def open(self):
+        browser.open('/')
+        s('.pattern-backgound').should(have.exact_text('Practice Form'))
 
     """Заполняем Name"""
-    s('#firstName').should(be.blank).type("Alex")
-    s('#lastName').should(be.blank).type('Davydov')
+
+    def fill_first_name(self, value):
+        return s('#firstName').should(be.blank).type(value)
+
+    def fill_last_name(self, value):
+        return s('#lastName').should(be.blank).type(value)
+
+    def fill_email(self, value):
+        return s('#userEmail').should(be.blank).type(value)
+
+    def fill_birthday(self, year, month, day):
+        s('#dateOfBirthInput').click()
+        s('.react-datepicker__month-select').click().element(by.text(month)).click()
+        s('.react-datepicker__year-select').click().element(by.text(year)).click()
+        s(f'.react-datepicker__day--{day}').click()
+
+
+def test_student_registration_form():
+    """Открываем страницу и выполняем проверку что находимся на нужной странице"""
+    registration_page = RegistrationPage()
+    registration_page.open()
+
+    """Заполняем Name"""
+    registration_page.fill_first_name('Alex')
+    registration_page.fill_last_name('Davydov')
 
     """Заполняем Email"""
-    s('#userEmail').should(be.blank).type('AlexDavydov92@gmail.com')
+    registration_page.fill_email('AlexDavydov92@gmail.com')
 
     """Заполняем Gender"""
     s('#gender-radio-1').double_click()
@@ -23,10 +47,7 @@ def test_practice_form():
     s('#userNumber').type('8005553535')
 
     """Заполняем Date of Birth"""
-    s('#dateOfBirthInput').click()
-    s('.react-datepicker__month-select').click().type('June').press_enter()
-    s('.react-datepicker__year-select').click().type('1992').press_enter()
-    s('.react-datepicker__day--020').click()
+    registration_page.fill_date_birth("1992", "June", "020")
 
     """Заполняем Subjects"""
     s('#subjectsInput').should(be.blank).type('English').press_enter()
@@ -47,7 +68,7 @@ def test_practice_form():
     s('#react-select-4-input').type('Karnal').press_enter()
 
     """Нажимаем Отправить"""
-    s('#submit').click()
+    s('#submit').press_enter()
 
     """Выполняем проверки что форма отправилась и заполнены все поля"""
     s('#example-modal-sizes-title-lg').should(
