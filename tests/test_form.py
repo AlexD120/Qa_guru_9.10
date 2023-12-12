@@ -1,31 +1,8 @@
 import os.path
-from selene import browser, have, be, by
+from selene import have, be
 from selene.support.shared.jquery_style import s
 
-
-class RegistrationPage:
-    """Открываем страницу и выполняем проверку"""
-
-    def open(self):
-        browser.open('/')
-        s('.pattern-backgound').should(have.exact_text('Practice Form'))
-
-    """Заполняем Name"""
-
-    def fill_first_name(self, value):
-        return s('#firstName').should(be.blank).type(value)
-
-    def fill_last_name(self, value):
-        return s('#lastName').should(be.blank).type(value)
-
-    def fill_email(self, value):
-        return s('#userEmail').should(be.blank).type(value)
-
-    def fill_birthday(self, year, month, day):
-        s('#dateOfBirthInput').click()
-        s('.react-datepicker__month-select').click().element(by.text(month)).click()
-        s('.react-datepicker__year-select').click().element(by.text(year)).click()
-        s(f'.react-datepicker__day--{day}').click()
+from qa_guru_9_10.pages.registration_page import RegistrationPage
 
 
 def test_student_registration_form():
@@ -47,7 +24,7 @@ def test_student_registration_form():
     s('#userNumber').type('8005553535')
 
     """Заполняем Date of Birth"""
-    registration_page.fill_date_birth("1992", "June", "020")
+    registration_page.fill_birthday("1992", "June", "20")
 
     """Заполняем Subjects"""
     s('#subjectsInput').should(be.blank).type('English').press_enter()
@@ -71,10 +48,7 @@ def test_student_registration_form():
     s('#submit').press_enter()
 
     """Выполняем проверки что форма отправилась и заполнены все поля"""
-    s('#example-modal-sizes-title-lg').should(
-        have.exact_text('Thanks for submitting the form')
-    )
-    s('.table-responsive').should(
+    registration_page.should_registered_user_with().should(
         have.text(
             'Alex Davydov'
             and 'AlexDavydov92@gmail.com'
@@ -83,7 +57,7 @@ def test_student_registration_form():
             and '20 June,1992'
             and 'English'
             and 'Reading'
-            and 'selfies.jpeg'
+            and 'image/selfies.jpeg'
             and 'South Street'
             and 'Haryana Karnal'
         )
