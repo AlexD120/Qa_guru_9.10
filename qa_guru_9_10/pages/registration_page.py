@@ -1,3 +1,5 @@
+import os
+
 from selene import browser, have, be, by
 from selene.support.shared.jquery_style import s
 
@@ -6,6 +8,18 @@ class RegistrationPage:
     """Открываем страницу и выполняем проверку"""
 
     def __init__(self):
+        self.first_name = s('#firstName')
+        self.last_name = s('#lastName')
+        self.state = s('#react-select-3-input')
+        self.email = s('#userEmail')
+        self.gender = s('#gender-radio-1')
+        self.user_number = s('#userNumber')
+        self.subjects = s('#subjectsInput')
+        self.hobbies = s('[for="hobbies-checkbox-2"]')
+        self.picture = s('#uploadPicture')
+        self.address = s('#currentAddress')
+        self.city = s('#react-select-4-input')
+        self.submit = s('#submit')
         self.should_registered_user_with = s('.table-responsive')
 
     def open(self):
@@ -15,16 +29,46 @@ class RegistrationPage:
     """Заполняем Name"""
 
     def fill_first_name(self, value):
-        return s('#firstName').should(be.blank).type(value)
+        self.first_name.should(be.blank).type(value)
 
     def fill_last_name(self, value):
-        return s('#lastName').should(be.blank).type(value)
+        self.last_name.should(be.blank).type(value)
 
     def fill_email(self, value):
-        return s('#userEmail').should(be.blank).type(value)
+        self.email.should(be.blank).type(value)
+
+    def fill_gender(self):
+        self.gender.double_click()
+
+    def fill_user_number(self, number):
+        self.user_number.type(number)
 
     def fill_birthday(self, year, month, day):
         s('#dateOfBirthInput').click()
         s('.react-datepicker__month-select').click().element(by.text(month)).click()
         s('.react-datepicker__year-select').click().element(by.text(year)).click()
         s(f'.react-datepicker__day--0{day}').click()
+
+    def fill_subjects(self, subjects_name):
+        self.subjects.should(be.blank).type(subjects_name).press_enter()
+
+    def fill_hobbies(self):
+        self.hobbies.click()
+
+    def fill_picture(self, picture_path):
+        self.picture.send_keys(os.path.abspath(picture_path))
+
+    def fill_address(self, adress):
+        self.address.should(be.blank).type(adress)
+
+    def fill_state(self, state_name):
+        self.state.type(state_name).press_enter()
+
+    def fill_city(self, city_name):
+        self.city.type(city_name).press_enter()
+
+    def fill_submit(self):
+        self.submit.press_enter()
+
+    def get_should_registered_user_with(self):
+        return self.should_registered_user_with
