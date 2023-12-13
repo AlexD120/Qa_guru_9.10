@@ -1,5 +1,4 @@
 import os
-
 from selene import browser, have, be, by
 from selene.support.shared.jquery_style import s
 
@@ -23,7 +22,7 @@ class RegistrationPage:
         self.should_registered_user_with = s('.table-responsive')
 
     def open(self):
-        browser.open('/')
+        browser.open('/automation-practice-form')
         s('.pattern-backgound').should(have.exact_text('Practice Form'))
 
     """Заполняем Name"""
