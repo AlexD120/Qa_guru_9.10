@@ -18,11 +18,12 @@ class SimpleUserRegistrationPage:
     def open(self):
         browser.open('/text-box')
         s('.pattern-backgound').should(have.exact_text('Text Box'))
+        return self
 
     def get_should_registered_user_with(self):
         return self.should_registered_user_with
 
-    def fill(self, user: User):
+    def register(self, user: User):
         self.full_name.type(user.full_name)
         self.email.type(user.email)
         self.current_adress.type(user.current_address)
@@ -36,3 +37,4 @@ class SimpleUserRegistrationPage:
                 and user.permanent_address
             )
         )
+        return self
